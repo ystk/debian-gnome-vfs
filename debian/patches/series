@@ -21,5 +21,6 @@
 24_home_dir_fakeroot.patch
 30_nfs4.patch
 31_link_tests_and_programs_against_required_libs.patch
-90_relibtoolize.patch
-99_ltmain_as-needed.patch
+40_disable_deprecated.patch
+41_test_srcdir.patch
+gnutls3.patch

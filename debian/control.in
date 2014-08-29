@@ -4,20 +4,18 @@ Priority: optional
 Maintainer: Josselin Mouette <joss@debian.org>
 Uploaders: @GNOME_TEAM@
 Build-Depends: cdbs,
+               dh-autoreconf,
                gtk-doc-tools (>= 1.0),
                libglib2.0-dev (>= 2.9.3),
                libgconf2-dev (>= 2.8.0),
                libxml2-dev (>= 2.6.0),
                libbz2-dev,
-               libfam-dev (>= 2.6.9-4) [!hurd-i386],
-               libsmbclient-dev,
                gettext,
                debhelper (>= 8),
                zlib1g-dev,
                intltool (>= 0.35.0),
                gnome-mime-data,
-               libgnutls-dev (>= 1.0.4-3),
-               libgcrypt11-dev,
+               libgnutls28-dev (>= 1.0.4-3),
                gnome-pkg-tools (>= 0.11.3),
                dpkg-dev (>= 1.13.19),
                libdbus-glib-1-dev (>= 0.70),
@@ -34,6 +32,7 @@ Vcs-Browser: http://svn.debian.org/wsvn/pkg-gnome/attic/gnome-vfs/
 
 Package: libgnomevfs2-common
 Architecture: all
+Multi-Arch: foreign
 Depends: ${misc:Depends},
          gnome-mime-data,
          shared-mime-info
@@ -51,13 +50,13 @@ Description: GNOME Virtual File System (common files)
 
 Package: libgnomevfs2-0
 Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         dbus (>= 0.90),
-         libgnomevfs2-common (>= ${gnome:Version}),
-         libgnomevfs2-common (<< ${gnome:NextVersion})
-Recommends: libgnomevfs2-extra, dbus-x11
-Suggests: libgnomevfs2-bin, fam
+         libgnomevfs2-common (= ${source:Version})
+Recommends: libgnomevfs2-extra
+Suggests: libgnomevfs2-bin
 Replaces: libgnomevfs2-common (<< 2.12.2-4)
 Conflicts: libbonobo2-0 (<< 2.15.0)
 Description: GNOME Virtual File System (runtime libraries)
@@ -67,11 +66,11 @@ Description: GNOME Virtual File System (runtime libraries)
  It provides an URI-based API, a backend supporting asynchronous file
  operations, a MIME type manipulation library and other features.
  .
- This package contains the runtime libraries, the daemon, and the
- default modules.
+ This package contains the runtime libraries and the default modules.
 
 Package: libgnomevfs2-bin
 Architecture: any
+Multi-Arch: foreign
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Replaces: libgnomevfs2-common (<< 2.12.2-4)
@@ -87,10 +86,10 @@ Description: GNOME Virtual File System (support binaries)
 
 Package: libgnomevfs2-extra
 Architecture: any
+Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libgnomevfs2-common (>= ${gnome:Version}),
-         libgnomevfs2-common (<< ${gnome:NextVersion})
+         libgnomevfs2-common (= ${source:Version})
 Conflicts: libgnomevfs2-common (<< 2.12.2-7),
            libgnomevfs2-0 (<< 1:2.16.0-1)
 Description: GNOME Virtual File System (extra modules)
@@ -104,8 +103,7 @@ Description: GNOME Virtual File System (extra modules)
  File System.  It includes:
   * the bzip2 module;
   * the ftp module;
-  * the http module (which also includes support for WebDAV);
-  * the smb module, to browse Windows shares.
+  * the http module (which also includes support for WebDAV).
 
 Package: libgnomevfs2-0-dbg
 Architecture: any
@@ -127,11 +125,12 @@ Description: GNOME Virtual File System (debugging libraries)
 
 Package: libgnomevfs2-dev
 Architecture: any
+Multi-Arch: same
 Section: libdevel
 Depends: libgnomevfs2-0 (= ${binary:Version}),
          ${misc:Depends},
          libgconf2-dev (>= 2.8.0-1),
-         libgnutls-dev,
+         libgnutls28-dev,
          libxml2-dev,
          libavahi-client-dev (>= 0.6),
          libavahi-glib-dev (>= 0.6),

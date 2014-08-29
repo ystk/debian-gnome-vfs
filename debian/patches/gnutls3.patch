@@ -1,0 +1,60 @@
+Description: Switch to gnutls28.
+Author: Dimitri John Ledkov <xnox@ubuntu.com>
+
+--- a/configure.in
++++ b/configure.in
+@@ -671,10 +671,6 @@
+   if test "x${OPENSSL_LIBS}" != "x"; then
+     AC_MSG_ERROR([*** Can't use both openssl and gnutls at the same time. Please pick one only. ***])
+   else
+-    AM_PATH_LIBGCRYPT
+-    if test "x${LIBGCRYPT_LIBS}" = "x"; then
+-      AC_MSG_ERROR([Unable to find LIBGRYPT])
+-    fi
+     PKG_CHECK_MODULES(LIBGNUTLS, gnutls >= 1.0.0, [AC_DEFINE(HAVE_GNUTLS, 1, [Define to 1 if GnuTLS is available])
+     				 	   	  have_ssl=true])
+     if test "x${LIBGNUTLS_LIBS}" = "x"; then
+@@ -1048,8 +1044,8 @@
+ dnl ==============================================================================
+ 
+ PKG_CHECK_MODULES(LIBGNOMEVFS, glib-2.0 >= $GLIB_REQUIRED gmodule-no-export-2.0 >= $GLIB_REQUIRED gthread-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gconf-2.0 >= $GCONF_REQUIRED libxml-2.0 >= $XML_REQUIRED gnome-mime-data-2.0 $dbus_requirement)
+-LIBGNOMEVFS_CFLAGS="$LIBGNOMEVFS_CFLAGS $OPENSSL_CFLAGS $LIBGNUTLS_CFLAGS $LIBGCRYPT_CFLAGS $HOWL_CFLAGS $AVAHI_CFLAGS"
+-LIBGNOMEVFS_LIBS="$LIBGNOMEVFS_LIBS $OPENSSL_LIBS $LIBGNUTLS_LIBS $LIBGCRYPT_LIBS $HOWL_LIBS $AVAHI_LIBS $RESOLVER_LIBS"
++LIBGNOMEVFS_CFLAGS="$LIBGNOMEVFS_CFLAGS $OPENSSL_CFLAGS $LIBGNUTLS_CFLAGS $HOWL_CFLAGS $AVAHI_CFLAGS"
++LIBGNOMEVFS_LIBS="$LIBGNOMEVFS_LIBS $OPENSSL_LIBS $LIBGNUTLS_LIBS $HOWL_LIBS $AVAHI_LIBS $RESOLVER_LIBS"
+ AC_SUBST(LIBGNOMEVFS_CFLAGS)
+ AC_SUBST(LIBGNOMEVFS_LIBS)
+ 
+--- a/libgnomevfs/gnome-vfs-ssl.c
++++ b/libgnomevfs/gnome-vfs-ssl.c
+@@ -42,8 +42,10 @@
+ #include <openssl/x509.h>
+ #include <openssl/err.h>
+ #elif defined HAVE_GNUTLS
+-#include <gcrypt.h>
+ #include <gnutls/gnutls.h>
++#if GNUTLS_VERSION_NUMBER <= 0x020b00
++#include <gcrypt.h>
++#endif
+ #endif
+ #if defined(HAVE_OPENSSL) || defined(HAVE_GNUTLS)
+ #include <sys/time.h>
+@@ -82,7 +84,7 @@
+ 	GnomeVFSSSLPrivate *private;
+ };
+ 
+-#ifdef HAVE_GNUTLS
++#if defined(HAVE_GNUTLS) && GNUTLS_VERSION_NUMBER <= 0x020b00
+ static int gcry_gthread_mutex_init (void **priv)			      
+ {									      
+ 	GMutex* lock = g_mutex_new();
+@@ -127,7 +129,9 @@
+ #ifdef HAVE_OPENSSL
+ 	SSL_library_init ();
+ #elif defined HAVE_GNUTLS
++#if GNUTLS_VERSION_NUMBER <= 0x020b00
+ 	gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_gthread);
++#endif
+ 	gnutls_global_init();
+ #endif
+ 	return NULL;

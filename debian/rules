@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
+include /usr/share/cdbs/1/rules/autoreconf.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
-include /usr/share/gnome-pkg-tools/1/rules/gnome-version.mk
 include /usr/share/gnome-pkg-tools/1/rules/clean-la.mk
 -include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
 
-GNOME_MODULE := gnome-vfs
+DEB_DH_AUTORECONF_ARGS = --as-needed
 
 ifeq ($(DEB_HOST_ARCH),hurd-i386)
   HOST_ARCH_CONFIGURE_FLAGS=--disable-ipv6
@@ -23,7 +23,10 @@ DEB_CONFIGURE_EXTRA_FLAGS := --enable-gtk-doc \
                              --enable-avahi \
                              --disable-openssl \
                              --disable-hal \
-                             --libexecdir=/usr/lib/gnome-vfs-2.0 \
+                             --disable-fam \
+                             --disable-samba \
+                             --libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH) \
+                             --libexecdir=\$${libdir}/gnome-vfs-2.0 \
                              $(HOST_ARCH_CONFIGURE_FLAGS)
 
 DEB_CONFIGURE_SCRIPT_ENV += LDFLAGS="-Wl,--as-needed"

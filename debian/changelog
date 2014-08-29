@@ -1,3 +1,54 @@
+gnome-vfs (1:2.24.4-6) unstable; urgency=medium
+
+  * Team upload
+    - brown paper bag release.
+  * Also make libgnomevfs2-dev depend on libgnutls28-dev
+    - like the build-dependency, this drops libgnutls-dev (gnutls26)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 05 Jul 2014 13:14:58 +0200
+
+gnome-vfs (1:2.24.4-5) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Dimitri John Ledkov ]
+  * Switch to gnutls28 (Closes: #747455).
+  * Drop gcrypt library dependency, gnutls can do thread locking.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 05 Jul 2014 12:05:48 +0200
+
+gnome-vfs (1:2.24.4-4) unstable; urgency=low
+
+  * Switch to multiarch.
+    + Update installation paths.
+    + Remove the daemon and the smb backend, it doesn’t build anymore 
+      and nobody uses it anyway. It avoids adding a new package just for 
+      the daemon. 
+    + Set Multi-Arch fields: lib and dev are MA: same, -common and -bin 
+      are MA: foreign.
+    + Remove gnome:Version stuff.
+  * Remove FAM support. The library is not ported to MA, and anyway 
+    gnome-vfs is not used by nautilus anymore, which was the application 
+    with a use for that feature.
+  * 41_test_srcdir.patch: new patch. Get autoreconf to work with a more 
+    recent automake.
+
+ -- Josselin Mouette <joss@debian.org>  Wed, 06 Nov 2013 11:36:56 +0100
+
+gnome-vfs (1:2.24.4-3) unstable; urgency=low
+
+  * debian/patches/40_disable_deprecated.patch:
+    + New patch, don't define G_DISABLE_DEPRECATED. Fixes FTBFS.
+      Closes: #707381.
+  * debian/control.in,
+    debian/rules:
+    + Run dh_autoreconf.
+  * debian/patches/90_relibtoolize.patch
+    debian/patches/99_ltmain_as-needed.patch:
+    + Removed, no longer needed.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Sat, 11 May 2013 19:46:18 +0200
+
 gnome-vfs (1:2.24.4-2) unstable; urgency=low
 
   [ Josselin Mouette ]
